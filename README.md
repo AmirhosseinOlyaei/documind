@@ -2,6 +2,13 @@
 
 A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and React.
 
+## 🚀 Live Demo
+
+| Resource | URL |
+|----------|-----|
+| **Frontend** | [https://d3py6xai9gspab.cloudfront.net](https://d3py6xai9gspab.cloudfront.net) |
+| **API** | [http://DocuMi-Backe-Mnku72pk6qQ2-534965933.us-east-1.elb.amazonaws.com](http://DocuMi-Backe-Mnku72pk6qQ2-534965933.us-east-1.elb.amazonaws.com) |
+
 ## Architecture
 
 ```
