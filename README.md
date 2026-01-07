@@ -26,39 +26,71 @@ A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and R
 └── infra/            # AWS CDK Infrastructure
 ```
 
-## Quick Start
+## Local Development
+
+Run everything locally using Docker for PostgreSQL.
 
 ### Prerequisites
 - Java 21+
 - Node.js 20+
-- Docker (for local PostgreSQL)
-- AWS CLI configured (for deployment)
+- Docker
 
-### Backend
+### 1. Start PostgreSQL (with pgvector)
 ```bash
 cd backend
-./mvnw spring-boot:run
+docker compose up -d
 ```
 
-### Frontend
+### 2. Configure Environment
+Create `backend/.env`:
+```
+OPENAI_API_KEY=your-key-here
+```
+
+### 3. Start Backend
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+### 4. Start Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### Infrastructure
+Access the app at **http://localhost:5173**
+
+---
+
+## AWS Deployment (Optional)
+
+Deploy to AWS using CDK. This creates production infrastructure:
+- **VPC** with public/private subnets
+- **RDS PostgreSQL** with pgvector
+- **ECS Fargate** for the Spring Boot API
+- **S3** for document storage
+- **CloudFront** for frontend hosting
+
+### Prerequisites
+- AWS CLI configured (`aws configure`)
+- AWS CDK installed (`npm install -g aws-cdk`)
+
+### Deploy
 ```bash
 cd infra
 npm install
+npx cdk bootstrap   # First time only
 npx cdk deploy
 ```
 
-## Environment Variables
-
-Create `backend/.env`:
-```
-OPENAI_API_KEY=your-key-here
+### Post-Deploy
+Update the OpenAI API key in AWS Secrets Manager:
+```bash
+aws secretsmanager put-secret-value \
+  --secret-id documind/openai-api-key \
+  --secret-string '{"apiKey":"sk-your-actual-key"}'
 ```
 
 ## Features
