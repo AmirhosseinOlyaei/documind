@@ -65,8 +65,9 @@ public class DocumentService {
 
             List<TextSegment> segments = new ArrayList<>();
             for (TextSegment segment : rawSegments) {
-                Metadata metadata = Metadata.from("documentId", documentId)
-                        .add("filename", file.getOriginalFilename());
+                Metadata metadata = new Metadata();
+                metadata.put("documentId", documentId);
+                metadata.put("filename", file.getOriginalFilename());
                 segments.add(TextSegment.from(segment.text(), metadata));
             }
 

@@ -10,6 +10,8 @@ import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
+import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
+import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +58,13 @@ public class QaService {
 
         Embedding questionEmbedding = embeddingModel.embed(request.getQuestion()).content();
 
-        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.findRelevant(questionEmbedding, 5, 0.5);
+        EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
+                .queryEmbedding(questionEmbedding)
+                .maxResults(5)
+                .minScore(0.5)
+                .build();
+        EmbeddingSearchResult<TextSegment> searchResult = embeddingStore.search(searchRequest);
+        List<EmbeddingMatch<TextSegment>> matches = searchResult.matches();
 
         String context = matches.stream()
                 .map(match -> match.embedded().text())
@@ -80,7 +88,7 @@ public class QaService {
                 .question(request.getQuestion())
                 .answer(answer)
                 .sources(matches.stream()
-                        .map(m -> m.embedded().metadata().get("filename"))
+                        .map(m -> m.embedded().metadata().getString("filename"))
                         .filter(f -> f != null)
                         .distinct()
                         .collect(Collectors.joining(", ")))
@@ -89,8 +97,8 @@ public class QaService {
 
         List<AnswerResponse.SourceDocument> sources = matches.stream()
                 .map(match -> AnswerResponse.SourceDocument.builder()
-                        .documentId(match.embedded().metadata().get("documentId"))
-                        .filename(match.embedded().metadata().get("filename"))
+                        .documentId(match.embedded().metadata().getString("documentId"))
+                        .filename(match.embedded().metadata().getString("filename"))
                         .excerpt(truncate(match.embedded().text(), 200))
                         .score(match.score())
                         .build())
