@@ -60,7 +60,7 @@ public class DocumentService {
             byte[] content = file.getBytes();
             dev.langchain4j.data.document.Document langchainDoc = parseDocument(content, file.getContentType());
 
-            var splitter = DocumentSplitters.recursive(500, 50);
+            var splitter = DocumentSplitters.recursive(1500, 200);
             List<TextSegment> rawSegments = splitter.split(langchainDoc);
 
             List<TextSegment> segments = new ArrayList<>();
