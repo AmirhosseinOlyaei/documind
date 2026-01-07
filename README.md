@@ -1,6 +1,12 @@
 # DocuMind - AI Document Q&A Service
 
+Upload documents and ask questions — DocuMind uses RAG (Retrieval-Augmented Generation) to provide accurate, context-aware answers from your files.
+
 A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and React.
+
+**Why?** To demonstrate a production-ready AI application with modern infrastructure. Useful for teams needing quick answers from documentation, research papers, or internal knowledge bases.
+
+*Built in Boston, USA — January 2026*
 
 ## 🚀 Live Demo
 
@@ -71,9 +77,9 @@ Access the app at **http://localhost:5173**
 
 ---
 
-## AWS Deployment (Optional)
+## AWS Deployment
 
-Deploy to AWS using CDK. This creates production infrastructure:
+The app is currently deployed on AWS. To deploy your own instance, CDK provisions:
 - **VPC** with public/private subnets
 - **RDS PostgreSQL** with pgvector
 - **ECS Fargate** for the Spring Boot API
@@ -92,12 +98,19 @@ npx cdk bootstrap   # First time only
 npx cdk deploy
 ```
 
-### Post-Deploy
-Update the OpenAI API key in AWS Secrets Manager:
+### Post-Deploy: Configure OpenAI Key
 ```bash
 aws secretsmanager put-secret-value \
   --secret-id documind/openai-api-key \
   --secret-string '{"apiKey":"sk-your-actual-key"}'
+```
+
+### Deploy Frontend Updates
+```bash
+cd frontend
+npm run build
+aws s3 sync dist/ s3://documind-frontend-<ACCOUNT_ID>-<REGION>/ --delete
+aws cloudfront create-invalidation --distribution-id <DIST_ID> --paths "/*"
 ```
 
 ## Features
@@ -107,3 +120,10 @@ aws secretsmanager put-secret-value \
 - RAG-based Q&A with LangChain4j
 - Conversation history
 - Modern React UI
+
+## Author
+
+**Amir Olyaei**
+
+- [DevArts](https://notion.so/61c6b79808ce476290c753165851b070)
+- [LinkedIn](https://www.linkedin.com/in/amirolyaei/)
