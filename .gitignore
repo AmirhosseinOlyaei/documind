@@ -34,3 +34,4 @@ backend/.env
 # Logs
 *.log
 logs/
+infra/cdk.context.json
