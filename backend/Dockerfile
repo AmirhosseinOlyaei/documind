@@ -1,12 +1,10 @@
 # Build stage
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
-
-# Install Maven
-RUN apk add --no-cache maven
 
 # Copy pom.xml and download dependencies
 COPY pom.xml ./
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 RUN mvn dependency:go-offline -B
 
 # Copy source code
@@ -15,15 +13,12 @@ COPY src ./src
 # Build the application
 RUN mvn package -DskipTests -B
 
-# Runtime stage
-FROM eclipse-temurin:21-jre-alpine
+# Runtime stage - use Debian-based for glibc (required by ONNX)
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Install libstdc++ for ONNX runtime (local embeddings)
-RUN apk add --no-cache libstdc++
-
 # Create non-root user
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 USER spring:spring
 
 # Copy the built JAR
