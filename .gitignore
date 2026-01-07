@@ -29,6 +29,7 @@ Thumbs.db
 # Env
 .env
 *.env.local
+backend/.env
 
 # Logs
 *.log
