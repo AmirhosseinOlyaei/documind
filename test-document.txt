@@ -1,0 +1,35 @@
+DocuMind Test Document
+======================
+
+Company Overview
+----------------
+DocuMind is an AI-powered document Q&A service built with modern technologies.
+The company was founded in 2026 and is headquartered in Boston, MA.
+
+Technology Stack
+----------------
+- Backend: Java 21 with Spring Boot 3.2
+- AI Framework: LangChain4j for RAG (Retrieval-Augmented Generation)
+- Database: PostgreSQL with pgvector for vector embeddings
+- Frontend: React with TypeScript and TailwindCSS
+- Infrastructure: AWS CDK for cloud deployment
+
+Key Features
+------------
+1. Upload PDF and text documents
+2. Automatic text extraction and chunking
+3. Vector embeddings for semantic search
+4. AI-powered question answering with source citations
+5. Conversation history management
+
+Pricing
+-------
+- Free tier: 10 documents, 100 questions/month
+- Pro tier: $29/month - unlimited documents, 1000 questions/month
+- Enterprise: Custom pricing with dedicated support
+
+Contact Information
+-------------------
+Email: support@documind.devarts.com
+Phone: 1-800-DOCUMIND
+Address: 123 AI Street, Boston, MA 02114

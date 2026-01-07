@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+documind:
+  openai:
+    model: gpt-4o-mini
+  embedding:
+    use-local: true
+
+logging:
+  level:
+    com.documind: INFO
+    dev.langchain4j: WARN
+    root: WARN
+
+server:
+  tomcat:
+    max-threads: 50
