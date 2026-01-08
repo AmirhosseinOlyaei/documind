@@ -1,11 +1,15 @@
-# DocuMind - AI Document Q&A Service
+<h1 align="center">DocuMind - AI Document Q&A Service</h1>
 
-![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green?logo=springboot)
-![React](https://img.shields.io/badge/React-18-blue?logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
-![AWS](https://img.shields.io/badge/AWS-CDK-yellow?logo=amazonaws)
-![LangChain4j](https://img.shields.io/badge/LangChain4j-0.35-purple)
+<p align="center">
+  <a href="https://openjdk.org/"><img src="https://img.shields.io/badge/Java_21-5382A1?style=flat&logo=openjdk&logoColor=white" alt="Java" /></a>
+  <a href="https://spring.io/projects/spring-boot"><img src="https://img.shields.io/badge/Spring_Boot_3.2-6DB33F?style=flat&logo=springboot&logoColor=white" alt="Spring Boot" /></a>
+  <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React_18-61DAFB?style=flat&logo=react&logoColor=black" alt="React" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="https://aws.amazon.com/cdk/"><img src="https://img.shields.io/badge/AWS_CDK-232F3E?style=flat&logo=amazonaws&logoColor=white" alt="AWS CDK" /></a>
+  <a href="https://docs.langchain4j.dev/"><img src="https://img.shields.io/badge/LangChain4j_0.35-1C3C3C?style=flat&logo=langchain&logoColor=white" alt="LangChain4j" /></a>
+  <a href="https://www.postgresql.org/"><img src="https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white" alt="PostgreSQL" /></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" alt="Docker" /></a>
+</p>
 
 Upload documents and ask questions — DocuMind uses RAG (Retrieval-Augmented Generation) to provide accurate, context-aware answers from your files.
 
