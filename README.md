@@ -11,6 +11,8 @@
   <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white" alt="Docker" /></a>
 </p>
 
+## 🌱 Overview
+
 Upload documents and ask questions — DocuMind uses RAG (Retrieval-Augmented Generation) to provide accurate, context-aware answers from your files.
 
 A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and React.
