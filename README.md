@@ -1,5 +1,12 @@
 # DocuMind - AI Document Q&A Service
 
+![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green?logo=springboot)
+![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![AWS](https://img.shields.io/badge/AWS-CDK-yellow?logo=amazonaws)
+![LangChain4j](https://img.shields.io/badge/LangChain4j-0.35-purple)
+
 Upload documents and ask questions — DocuMind uses RAG (Retrieval-Augmented Generation) to provide accurate, context-aware answers from your files.
 
 A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and React.
@@ -8,12 +15,41 @@ A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and R
 
 *Built in Boston, USA — January 2026*
 
+## Table of Contents
+
+- [Live Demo](#-live-demo)
+- [Screenshot](#screenshot)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Local Development](#local-development)
+- [Environment Variables](#environment-variables)
+- [AWS Deployment](#aws-deployment)
+- [Author](#author)
+- [License](#license)
+
 ## 🚀 Live Demo
 
 | Resource | URL |
 |----------|-----|
 | **Frontend** | [https://d3py6xai9gspab.cloudfront.net](https://d3py6xai9gspab.cloudfront.net) |
 | **API** | [http://DocuMi-Backe-Mnku72pk6qQ2-534965933.us-east-1.elb.amazonaws.com](http://DocuMi-Backe-Mnku72pk6qQ2-534965933.us-east-1.elb.amazonaws.com) |
+
+## Screenshot
+
+![DocuMind Upload](docs/Upload.png)
+![DocuMind Question & Answer](docs/Chat.png)
+
+*Upload a document, ask questions, and get AI-powered answers with source citations.*
+
+## Features
+
+- PDF/Text document upload
+- Automatic text extraction and chunking
+- Vector embeddings with pgvector
+- RAG-based Q&A with LangChain4j
+- Conversation history
+- Modern React UI
 
 ## Architecture
 
@@ -30,6 +66,114 @@ A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and R
               │  (Docs)  │         │  (pgvector)  │
               └──────────┘         └──────────────┘
 ```
+
+### AI Architecture (RAG Pipeline)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              DOCUMENT INGESTION                                     │
+│                                                                                     │
+│  ┌──────────┐    ┌──────────────┐    ┌──────────────┐    ┌───────────────────────┐ │
+│  │  Upload  │───▶│  Parse PDF/  │───▶│   Chunk      │───▶│  Generate Embeddings  │ │
+│  │  Document│    │  Text Files  │    │   (1500 char)│    │  (AllMiniLmL6V2)      │ │
+│  └──────────┘    └──────────────┘    └──────────────┘    └───────────┬───────────┘ │
+│                                                                      │             │
+│                                                                      ▼             │
+│                                                          ┌───────────────────────┐ │
+│                                                          │  Store in pgvector    │ │
+│                                                          │  (PostgreSQL)         │ │
+│                                                          └───────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              QUESTION ANSWERING                                     │
+│                                                                                     │
+│  ┌──────────┐    ┌──────────────┐    ┌──────────────┐    ┌───────────────────────┐ │
+│  │  User    │───▶│  Embed       │───▶│  Vector      │───▶│  Retrieve Top 5       │ │
+│  │  Question│    │  Question    │    │  Similarity  │    │  Relevant Chunks      │ │
+│  └──────────┘    └──────────────┘    └──────────────┘    └───────────┬───────────┘ │
+│                                                                      │             │
+│                                                                      ▼             │
+│  ┌──────────┐    ┌──────────────────────────────────────────────────────────────┐  │
+│  │  Answer  │◀───│  OpenAI GPT-4o-mini generates answer with context + sources  │  │
+│  └──────────┘    └──────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### AWS Infrastructure
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                    USERS                                            │
+└─────────────────────────────────────┬───────────────────────────────────────────────┘
+                                      │ HTTPS
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              CLOUDFRONT CDN                                         │
+│                    https://d3py6xai9gspab.cloudfront.net                            │
+│                                                                                     │
+│  ┌─────────────────┐                              ┌─────────────────┐               │
+│  │   Static Assets │◄─────────────────────────────┤   API Routes    │               │
+│  │   (/, /*, etc.) │                              │   (/api/*)      │               │
+│  └─────────────────┘                              └─────────────────┘               │
+└─────────────┬───────────────────────────────────────────────┬───────────────────────┘
+              │                                               │
+              ▼                                               ▼
+┌─────────────────────────────────────┐    ┌─────────────────────────────────────────┐
+│            S3 BUCKET                │    │        APPLICATION LOAD BALANCER        │
+│   documind-frontend-884710187119    │    │              (Port 80)                  │
+│         (Frontend Assets)           │    └─────────────┬───────────────────────────┘
+└─────────────────────────────────────┘                  │ HTTP
+                                                         ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                    VPC                                              │
+│                          (us-east-1a & us-east-1b)                                  │
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                           PUBLIC SUBNETS                                    │    │
+│  │  ┌─────────────────┐                    ┌─────────────────┐                 │    │
+│  │  │ Internet Gateway│                    │   NAT Gateway   │                 │    │
+│  │  └─────────────────┘                    └─────────────────┘                 │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                           │ Outbound Internet                       │
+│                                           ▼                                         │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                          PRIVATE SUBNETS                                    │    │
+│  │                                                                             │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │                    ECS FARGATE CLUSTER                              │    │    │
+│  │  │                                                                     │    │    │
+│  │  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │    │    │
+│  │  │  │ ECS Task    │  │ ECS Task    │  │ ECS Task    │                 │    │    │
+│  │  │  │documind-api │  │documind-api │  │documind-api │                 │    │    │
+│  │  │  └─────────────┘  └─────────────┘  └─────────────┘                 │    │    │
+│  │  │              Auto Scaling: 50% - 200% capacity                      │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  │                                           │ Database Connection              │    │
+│  │                                           ▼                                  │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │                    RDS POSTGRESQL                                   │    │    │
+│  │  │  Instance: db.t3.micro | Storage: 20GB (auto-scale to 100GB)       │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+                                           │ Document Storage
+                                           ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  S3 DOCUMENTS BUCKET: documind-documents-884710187119 (Encrypted, CORS enabled)     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│  SECURITY: Security Groups │ IAM Roles │ Secrets Manager (DB creds, OpenAI key)     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+- **High Availability**: Multi-AZ deployment across two availability zones
+- **Scalability**: Auto-scaling ECS service and RDS storage
+- **Security**: Private subnets for application and database tiers
+- **Performance**: CloudFront CDN for global content delivery
+- **AI Integration**: OpenAI API for intelligent document processing
 
 ## Project Structure
 
@@ -55,10 +199,7 @@ docker compose up -d
 ```
 
 ### 2. Configure Environment
-Create `backend/.env`:
-```
-OPENAI_API_KEY=your-key-here
-```
+Create `backend/.env` with your OpenAI API key (see [Environment Variables](#environment-variables)).
 
 ### 3. Start Backend
 ```bash
@@ -75,16 +216,27 @@ npm run dev
 
 Access the app at **http://localhost:5173**
 
+## Environment Variables
+
+| Variable | Description | Required | Default |
+|----------|-------------|----------|--------|
+| `OPENAI_API_KEY` | OpenAI API key for GPT-4o-mini | Yes | - |
+| `SPRING_DATASOURCE_URL` | PostgreSQL connection URL | No | `jdbc:postgresql://localhost:5432/documind` |
+| `SPRING_DATASOURCE_USERNAME` | Database username | No | `documind` |
+| `SPRING_DATASOURCE_PASSWORD` | Database password | No | `documind` |
+
+**Local Development:** Create `backend/.env`:
+```
+OPENAI_API_KEY=sk-your-key-here
+```
+
+**AWS Deployment:** Store in Secrets Manager (see [Post-Deploy](#post-deploy-configure-openai-key)).
+
 ---
 
 ## AWS Deployment
 
-The app is currently deployed on AWS. To deploy your own instance, CDK provisions:
-- **VPC** with public/private subnets
-- **RDS PostgreSQL** with pgvector
-- **ECS Fargate** for the Spring Boot API
-- **S3** for document storage
-- **CloudFront** for frontend hosting
+The app is currently deployed on AWS. To deploy your own instance:
 
 ### Prerequisites
 - AWS CLI configured (`aws configure`)
@@ -113,17 +265,13 @@ aws s3 sync dist/ s3://documind-frontend-<ACCOUNT_ID>-<REGION>/ --delete
 aws cloudfront create-invalidation --distribution-id <DIST_ID> --paths "/*"
 ```
 
-## Features
-- PDF/Text document upload
-- Automatic text extraction and chunking
-- Vector embeddings with pgvector
-- RAG-based Q&A with LangChain4j
-- Conversation history
-- Modern React UI
-
 ## Author
 
 **Amir Olyaei**
 
 - [DevArts](https://notion.so/61c6b79808ce476290c753165851b070)
 - [LinkedIn](https://www.linkedin.com/in/amirolyaei/)
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
