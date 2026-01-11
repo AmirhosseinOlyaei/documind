@@ -107,6 +107,7 @@ export class DocuMindStack extends cdk.Stack {
                         DB_PORT: database.instanceEndpoint.port.toString(),
                         DB_NAME: 'documind',
                         SPRING_PROFILES_ACTIVE: 'prod',
+                        APP_CORS_ALLOWED_ORIGINS: 'http://localhost:5173,http://localhost:3000,https://*.cloudfront.net',
                     },
                     secrets: {
                         DB_USERNAME: ecs.Secret.fromSecretsManager(dbCredentials, 'username'),

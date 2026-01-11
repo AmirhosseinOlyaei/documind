@@ -32,8 +32,10 @@ A demo MVP showcasing Java, TypeScript, AWS CDK, LangChain4j, Spring Boot, and R
 - [Environment Variables](#environment-variables)
 - [AWS Deployment](#aws-deployment)
 - [Author](#author)
+- [Documentation](docs/)
+  - [Architecture Deep Dive](docs/ARCHITECTURE.md)
+  - [Deployment & Teardown Guide](docs/DEPLOYMENT.md)
 - [License](#license)
-- [Full Documentation](docs/ARCHITECTURE.md)
 
 ## 🚀 Live Demo
 
